@@ -8,6 +8,9 @@
 
 use Saitama\URLsharer\Exceptions\TitleNotFoundException;
 
+file_put_contents(__DIR__ . "/Data/urls.json", "[]");
+file_put_contents(__DIR__ . "/Data/messages.json", "[]");
+
 include_once __DIR__ . "/../vendor/autoload.php";
 include_once __DIR__ . "/autoload.php";
 
@@ -51,6 +54,16 @@ $router = Aerys\router()
                 "description" => "Url is malformed / the url resource doesn't exit / the server is facing problems"
             ], $jsonOptions));
         }
+    })
+    ->get("/urlsHistory", function (\Aerys\Request $request, \Aerys\Response $response) {
+        $history = file_get_contents(__DIR__ . "/Data/urls.json");
+        $response->setHeader("Content-Type", "application/json")
+            ->end($history);
+    })
+    ->get("/chatHistory", function (\Aerys\Request $request, \Aerys\Response $response) {
+        $history = file_get_contents(__DIR__ . "/Data/messages.json");
+        $response->setHeader("Content-Type", "application/json")
+            ->end($history);
     });
 
 $websocket = Aerys\websocket(new class implements Aerys\Websocket {
@@ -70,6 +83,7 @@ $websocket = Aerys\websocket(new class implements Aerys\Websocket {
 
     public function onOpen(int $clientId, $handshakeData) {
         $this->clientIds[] = $clientId;
+        var_dump("Client Id (URL): " . $clientId);
     }
 
     public function onData(int $clientId, \Aerys\Websocket\Message $msg) {
@@ -98,9 +112,56 @@ $websocket = Aerys\websocket(new class implements Aerys\Websocket {
     }
 });
 
+$chatWebsocket = Aerys\websocket(new class implements Aerys\Websocket {
+    /**
+     * @var Aerys\Websocket\Endpoint
+     */
+    private $endpoint;
+    private $clientIds = [];
+
+    public function onStart(\Aerys\Websocket\Endpoint $endpoint) {
+        $this->endpoint = $endpoint;
+    }
+
+    public function onHandshake(\Aerys\Request $request, \Aerys\Response $response) {
+        // TODO: Implement onHandshake() method.
+    }
+
+    public function onOpen(int $clientId, $handshakeData) {
+        $this->clientIds[] = $clientId;
+        var_dump("Client Id (CHAT): " . $clientId);
+    }
+
+    public function onData(int $clientId, \Aerys\Websocket\Message $msg) {
+        $message = yield $msg;
+        $message = json_decode($message, true);
+
+        $urls = json_decode(file_get_contents(__DIR__ . "/Data/messages.json"), true);
+
+        $urls[] = $message;
+
+        file_put_contents(__DIR__ . "/Data/messages.json", json_encode($urls, JSON_PRETTY_PRINT));
+
+        $clientIds = $this->clientIds;
+        $key = array_search($clientId, $clientIds);
+        unset($clientIds[$key]);
+
+        $this->endpoint->send($clientIds, json_encode($message));
+    }
+
+    public function onClose(int $clientId, int $code, string $reason) {
+        // TODO: Implement onClose() method.
+    }
+
+    public function onStop() {
+        // TODO: Implement onStop() method.
+    }
+});
+
 $router->get("/websocketEndpoint", $websocket);
+$router->get("/chatWebsocket", $chatWebsocket);
 
 (new Aerys\Host())
-    ->expose("*", 8080)
+    ->expose("*", 450)
     ->use($router)
     ->use(\Aerys\root(__DIR__ . "/../public"));

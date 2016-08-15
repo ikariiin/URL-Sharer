@@ -5,7 +5,10 @@
     <link href="//fonts.googleapis.com/icon?family=Material+Icons"
           rel="stylesheet">
     <link href="css/animate.css" rel="stylesheet">
+    <link href="css/tooltipster.min.css" rel="stylesheet">
     <script src="//ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
 <div id="landing" class="page">
@@ -26,36 +29,63 @@
     </div>
 </div>
 <div id="main" class="page">
+    <div class="modal-container">
+        <div class="modal" id="insert">
+            <h1>Share an URL system-wide</h1>
+            <div class="input-group" style="width: 85%">
+                <input type="text" id="url" name="url">
+                <span class="highlight"></span>
+                <span class="bar"></span>
+                <label for="url">Your Url</label>
+            </div>
+            <button class="btn" data-ripple="rgba(255, 255, 255, 1)" id="urlCheckButton"><i class="material-icons">done</i> Check Url</button>
+        </div>
+    </div>
     <div class="top-settings-bar">
         <div class="brand" data-ripple>URL Sharer</div>
-        <div class="settings-button" data-ripple data-dropdown='[{"text": "Go to landing page", "link": "#landing"}, {"text": "Dummy Link", "link": "#"}, {"text": "Configure", "link": "#configure"}]'>
+        <div class="settings-button" data-ripple data-dropdown='[{"text": "Landing page", "link": "#landing"}, {"text": "Main Page", "link": "#main"}, {"text": "Chat", "link": "#chat"}, {"text": "Configure", "link": "#configure"}]'>
             <i class="material-icons">more_vert</i>
         </div>
     </div>
     <div class="column">
         <h1>Your shared URLs</h1>
-        <div class="modal-container">
-            <div class="modal" id="insert">
-                <h1>Share an URL system-wide</h1>
-                <div class="input-group" style="width: 85%">
-                    <input type="text" id="url" name="url">
-                    <span class="highlight"></span>
-                    <span class="bar"></span>
-                    <label for="url">Your Url</label>
-                </div>
-                <button class="btn" data-ripple="rgba(255, 255, 255, 1)" id="urlCheckButton"><i class="material-icons">done</i> Check Url</button>
-            </div>
-        </div>
+        <br>
+        <div class="urls-container"></div>
     </div>
     <div class="column">
         <h1>Stats:</h1>
+        <div class="stat-oc" id="urlConnectionStat">There was some problem opening the websocket connection to the server, for url transfer.</div>
+        <div class="stat-oc" id="chatConnectionStat">There was some problem opening the websocket connection to the server, for chat messages transfer.</div>
     </div>
-    <div class="fab" data-ripple="rgba(255, 255, 255, 1)"><i class="material-icons">add</i></div>
+    <div class="fab" data-ripple="rgba(255, 255, 255, 1)" title="Click this to share new URLs!"><i class="material-icons">add</i></div>
+</div>
+<div id="chat" class="page">
+    <div class="top-settings-bar">
+        <div class="brand" data-ripple>URL Sharer</div>
+        <div class="settings-button" data-ripple data-dropdown='[{"text": "Landing page", "link": "#landing"}, {"text": "Main Page", "link": "#main"}, {"text": "Chat", "link": "#chat"}, {"text": "Configure", "link": "#configure"}]'>
+            <i class="material-icons">more_vert</i>
+        </div>
+    </div>
+    <div class="container">
+        <h1>Chat</h1>
+        <div class="chat-container">
+            <div class="chat-transcript">
+            </div>
+            <div class="chat-input">
+                <div class="input-group">
+                    <input type="text" id="chatMessage" name="chatMessage">
+                    <span class="highlight"></span>
+                    <span class="bar"></span>
+                    <label for="chatMessage">Your Message</label>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 <div id="configure" class="page">
     <div class="top-settings-bar">
         <div class="brand" data-ripple>URL Sharer</div>
-        <div class="settings-button" data-ripple data-dropdown='[{"text": "Go to landing page", "link": "#landing"}, {"text": "Main Page", "link": "#main"}, {"text": "Configure", "link": "#configure"}]'>
+        <div class="settings-button" data-ripple data-dropdown='[{"text": "Go to landing page", "link": "#landing"}, {"text": "Main Page", "link": "#main"}, {"text": "Chat", "link": "#chat"}, {"text": "Configure", "link": "#configure"}]'>
             <i class="material-icons">more_vert</i>
         </div>
     </div>
@@ -63,8 +93,12 @@
         <h1>Configure</h1>
     </div>
 </div>
+<script src="js/tooltipster.min.js"></script>
 <script src="js/script.js"></script>
 <script>
+    $("[title]").tooltipster({
+        theme: "tooltipster-light"
+    });
     // Yet another toggle
     var yat = false;
     $(".fab").on("click", function () {
