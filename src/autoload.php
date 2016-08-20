@@ -7,4 +7,7 @@
  */
 
 include_once __DIR__ . "/Exceptions/TitleNotFoundException.php";
-include_once  __DIR__ . "/Utilities/PageDataRetriever.php";
+include_once __DIR__ . "/Internals/PageDataRetriever.php";
+include_once __DIR__ . "/Internals/Utility.php";
+include_once __DIR__ . "/Internals/Routes.php";
+include_once __DIR__ . "/Internals/UrlHistory.php";

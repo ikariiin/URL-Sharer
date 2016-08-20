@@ -6,7 +6,7 @@
  * Time: 10:51 PM
  */
 
-namespace Saitama\URLsharer\Utilities;
+namespace Saitama\URLsharer\Internals;
 use Saitama\URLsharer\Exceptions\TitleNotFoundException;
 
 class PageDataRetriever {

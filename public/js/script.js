@@ -498,6 +498,10 @@ var insertBulkMessage_chat = function (bulkData) {
     }, 10000);
 };
 
+var pinged = function (message) {
+    return message.indexOf("@" + MACHINE_NAME) !== -1;
+};
+
 var insertNewMessage_chat = function (messageData) {
     var from = messageData.from;
     var message = messageData.message;
@@ -518,6 +522,9 @@ var insertNewMessage_chat = function (messageData) {
         var color = MATERIAL_COLORS[Math.floor(Math.random() * MATERIAL_COLORS.length)];
         $chatMessage.append("<span class='from-circle' style='background-color: " + color + "' title='@" + from + "'>" + fromFirst + "</span>");
         $chatMessage.append(message);
+        if(pinged(message)) {
+            ping();
+        }
     }
 
     $chatMessage.hide();
@@ -553,4 +560,9 @@ $("#chatMessage").on("keypress", function (e) {
         }
     }
 });
+
+var ping = function () {
+    var pingSound = new Audio("/Resources/so.mp3");
+    pingSound.play();
+};
 

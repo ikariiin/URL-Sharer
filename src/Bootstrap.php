@@ -23,7 +23,7 @@ $router = Aerys\router()
 
         $jsonOptions = JSON_PRETTY_PRINT|JSON_UNESCAPED_SLASHES;
         if($content) {
-            $pageDataRetriever = new \Saitama\URLsharer\Utilities\PageDataRetriever($content);
+            $pageDataRetriever = new \Saitama\URLsharer\Internals\PageDataRetriever($content);
 
             $parsedUrl = parse_url($url);
             $port = isset($parsedUrl["port"]) ? $parsedUrl : 80;
@@ -83,7 +83,6 @@ $websocket = Aerys\websocket(new class implements Aerys\Websocket {
 
     public function onOpen(int $clientId, $handshakeData) {
         $this->clientIds[] = $clientId;
-        var_dump("Client Id (URL): " . $clientId);
     }
 
     public function onData(int $clientId, \Aerys\Websocket\Message $msg) {
@@ -129,7 +128,6 @@ $chatWebsocket = Aerys\websocket(new class implements Aerys\Websocket {
 
     public function onOpen(int $clientId, $handshakeData) {
         $this->clientIds[] = $clientId;
-        var_dump("Client Id (CHAT): " . $clientId);
     }
 
     public function onData(int $clientId, \Aerys\Websocket\Message $msg) {
@@ -162,6 +160,6 @@ $router->get("/websocketEndpoint", $websocket);
 $router->get("/chatWebsocket", $chatWebsocket);
 
 (new Aerys\Host())
-    ->expose("*", 450)
+    ->expose("*", 1337)
     ->use($router)
     ->use(\Aerys\root(__DIR__ . "/../public"));
