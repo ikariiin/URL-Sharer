@@ -159,7 +159,11 @@ $chatWebsocket = Aerys\websocket(new class implements Aerys\Websocket {
 $router->get("/websocketEndpoint", $websocket);
 $router->get("/chatWebsocket", $chatWebsocket);
 
+$config = json_decode(file_get_contents(__DIR__ . "/../config/config.json"), true);
+$addr = $config["listen on address"];
+$port = (int) $config["listen on port"];
+
 (new Aerys\Host())
-    ->expose("*", 1337)
+    ->expose($addr, $port)
     ->use($router)
     ->use(\Aerys\root(__DIR__ . "/../public"));

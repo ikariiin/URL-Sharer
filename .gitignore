@@ -1,6 +1,4 @@
 # Created by .ignore support plugin (hsz.mobi)
 .idea/
-composer.json
-composer.lock
 vendor/
 src/Data/*
